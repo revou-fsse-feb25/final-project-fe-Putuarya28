@@ -1,0 +1,37 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import fs from "fs";
+import path from "path";
+
+const usersFile = path.resolve(process.cwd(), "users.json");
+
+function readUsers(): User[] {
+  if (!fs.existsSync(usersFile)) return [];
+  return JSON.parse(fs.readFileSync(usersFile, "utf-8"));
+}
+
+type User = {
+  email: string;
+  password: string;
+  role: string;
+};
+
+function writeUsers(users: User[]) {
+  fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
+}
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const { email, password } = req.body;
+  const users = readUsers();
+  if (users.some((u: User) => u.email === email)) {
+    return res.status(409).json({ message: "User already exists." });
+  }
+
+  users.push({ email, password, role: "customer" });
+  writeUsers(users);
+
+  return res.status(201).json({ message: "User registered successfully." });
+}
