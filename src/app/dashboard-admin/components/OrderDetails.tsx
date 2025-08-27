@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSession } from "next-auth/react";
+// import { useSession } from "next-auth/react"; // Removed unused import to fix lint error
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import Image from "next/image";
 
@@ -29,7 +29,7 @@ export default function OrderDetailsForm({
   initialDetails = {},
   onSuccess,
 }: Props & { status?: string; currentTrackingCode?: string }) {
-  const { data: session } = useSession();
+  // const { data: session } = useSession(); // Removed unused variable to fix lint error
   const [measurementType, setMeasurementType] = useState<string>(
     initialDetails.measurementType || "manual"
   );

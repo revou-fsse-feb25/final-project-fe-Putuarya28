@@ -110,7 +110,7 @@ export default function Appointments() {
                 <div className="font-semibold">Order Details:</div>
                 <ul className="list-disc ml-6">
                   {(() => {
-                    const od = booking.orderDetails as Record<string, any>;
+                    const od = booking.orderDetails as Record<string, unknown>;
                     const type = od.measurementType;
                     const showFields =
                       type === "manual"

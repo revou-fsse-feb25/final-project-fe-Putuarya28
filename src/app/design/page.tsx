@@ -61,6 +61,7 @@ const DesignPage = () => {
                 className="bg-white rounded-xl shadow flex flex-col overflow-hidden"
               >
                 <div className="w-full h-180 bg-gray-100 flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={img.imageUrl}
                     alt={`Design ${idx + 1}`}
