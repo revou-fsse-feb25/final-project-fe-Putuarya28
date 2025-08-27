@@ -53,12 +53,14 @@ export const authOptions: AuthOptions = {
         );
         if (!res.ok) return null;
         const data = await res.json();
-        if (!data || !data.user || !data.token) return null;
+        if (!data || !data.user || !data.accessToken || !data.refreshToken)
+          return null;
         return {
           ...data.user,
           id: String(data.user.id),
           role: data.user.role ?? undefined,
-          token: data.token,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         };
       },
     }),
@@ -66,37 +68,34 @@ export const authOptions: AuthOptions = {
   // removed duplicate session property
   callbacks: {
     async jwt({ token, user }) {
-      // Debug log for jwt callback
-      console.log("[NextAuth][jwt callback] user:", user);
-      // If user is present, this is the initial sign-in
       if (user) {
-        console.log("[NextAuth][jwt callback] user.id:", user.id);
         token.role = user.role ?? undefined;
-        // Always set token.id from user.id or backendUser.id
-        const backendUser = user as BackendUser;
+        const backendUser = user as BackendUser & {
+          accessToken?: string;
+          refreshToken?: string;
+        };
         token.id = user.id || backendUser.id || undefined;
-        console.log("[NextAuth][jwt callback] token.id:", token.id);
-        if (backendUser.token) {
-          token.accessToken = String(backendUser.token);
+        if (backendUser.accessToken) {
+          token.accessToken = String(backendUser.accessToken);
+        }
+        if (backendUser.refreshToken) {
+          token.refreshToken = String(backendUser.refreshToken);
         }
       }
-      console.log("[NextAuth][jwt callback] token:", token);
+      // Optionally: handle token refresh here if needed
       return token;
     },
     async session({ session, token }) {
-      // Extra debug logging
-      console.log("[NextAuth][session callback] token:", token);
-      console.log("[NextAuth][session callback] session (before):", session);
-      // Always ensure session.user exists and has id/role/name
       if (!session.user) session.user = {};
       session.user.id = token.id ? String(token.id) : undefined;
       session.user.role = token.role ?? undefined;
       session.user.name = token.name ?? token.email ?? "User";
-      // Pass accessToken to session if present
       if (typeof token.accessToken === "string") {
         session.accessToken = token.accessToken;
       }
-      console.log("[NextAuth][session callback] session (after):", session);
+      if (typeof token.refreshToken === "string") {
+        session.refreshToken = token.refreshToken;
+      }
       return session;
     },
   },
@@ -104,3 +103,47 @@ export const authOptions: AuthOptions = {
     signIn: "/login",
   },
 };
+
+// Utility to refresh access token using backend
+export async function refreshAccessToken(userId: string, refreshToken: string) {
+  const res = await fetch(
+    `${
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+    }/auth/refresh`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: Number(userId), refreshToken }),
+    }
+  );
+  if (!res.ok) throw new Error("Failed to refresh token");
+  return res.json();
+}
+
+// Extend Session type to include refreshToken
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+    refreshToken?: string;
+    user: {
+      id?: string;
+      role?: string;
+      name?: string;
+      email?: string;
+    };
+  }
+}
+
+// Extend Session type to include refreshToken
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+    refreshToken?: string;
+    user: {
+      id?: string;
+      role?: string;
+      name?: string;
+      email?: string;
+    };
+  }
+}

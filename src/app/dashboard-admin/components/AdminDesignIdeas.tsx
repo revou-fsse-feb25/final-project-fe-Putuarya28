@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 
 type DesignImage = {
   id: number;
@@ -15,7 +16,7 @@ export default function AdminDesignIdeas() {
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
-    fetch(`${BACKEND_URL}/design-images?label=${label}`)
+    fetchWithAuth(`${BACKEND_URL}/design-images?label=${label}`)
       .then((res) => res.json())
       .then((data) => setImages(Array.isArray(data) ? data : []));
   }, [label]);
@@ -27,7 +28,7 @@ export default function AdminDesignIdeas() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("label", label);
-    const res = await fetch(`${BACKEND_URL}/design-images`, {
+    const res = await fetchWithAuth(`${BACKEND_URL}/design-images`, {
       method: "POST",
       body: formData,
     });
@@ -44,7 +45,7 @@ export default function AdminDesignIdeas() {
 
   async function handleDelete(id: number) {
     setFeedback("");
-    const res = await fetch(`${BACKEND_URL}/design-images/${id}`, {
+    const res = await fetchWithAuth(`${BACKEND_URL}/design-images/${id}`, {
       method: "DELETE",
     });
     if (res.ok) {
@@ -77,7 +78,7 @@ export default function AdminDesignIdeas() {
           <option value="balloon">Balloon</option>
           <option value="brides">Brides</option>
           <option value="modern-elegant">Modern Elegant</option>
-          
+
           {/* Add more labels */}
         </select>
       </div>

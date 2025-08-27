@@ -10,6 +10,18 @@ This is the frontend for the Final Project, built with Next.js and TypeScript.
 - Design portfolio
 - Responsive UI
 
+## Deployment
+
+- [Frontend Live Demo](https://dummy-frontend-deployment-url.com)
+
+## Screenshots
+
+| Home Page                                                                       | Dashboard                                                                            |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| ![Home Screenshot](https://dummyimage.com/400x200/cccccc/000000&text=Home+Page) | ![Dashboard Screenshot](https://dummyimage.com/400x200/cccccc/000000&text=Dashboard) |
+
+---
+
 ## Getting Started
 
 ### Prerequisites

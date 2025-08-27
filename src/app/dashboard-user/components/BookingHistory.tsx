@@ -4,8 +4,13 @@ import { fetchBookingHistory } from "./api";
 import { useSession } from "next-auth/react";
 
 export default function BookingHistory() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [history, setHistory] = useState<any[]>([]);
+  type Booking = {
+    id: number;
+    status: string;
+    date: string;
+    orderDetails?: Record<string, unknown>;
+  };
+  const [history, setHistory] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const { data: session, status } = useSession();
@@ -18,7 +23,7 @@ export default function BookingHistory() {
       return;
     }
     fetchBookingHistory(session)
-      .then((data) => {
+      .then((data: Booking[]) => {
         setHistory(data);
         setLoading(false);
       })
@@ -43,6 +48,21 @@ export default function BookingHistory() {
               Status: <span className="text-green-600">{booking.status}</span>
             </div>
             <div>Date: {booking.date}</div>
+            {booking.orderDetails && (
+              <div className="mt-2">
+                <div className="font-semibold">Order Details:</div>
+                <ul className="list-disc ml-6">
+                  {Object.entries(booking.orderDetails).map(([key, value]) => (
+                    <li key={key}>
+                      <span className="capitalize">
+                        {key.replace(/([A-Z])/g, " $1")}
+                      </span>
+                      : {String(value)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <div>Product Received</div>
           </div>
         ))}

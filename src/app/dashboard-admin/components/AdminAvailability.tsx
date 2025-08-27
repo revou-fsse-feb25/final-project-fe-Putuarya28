@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 
 interface AvailableDate {
   date: string;
@@ -11,7 +11,7 @@ export default function AdminAvailability() {
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
-    fetch(
+    fetchWithAuth(
       `${
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
       }/available-dates`
@@ -27,7 +27,7 @@ export default function AdminAvailability() {
     setLoading(true);
     setFeedback("");
     const isoDate = new Date(newDate).toISOString();
-    const res = await fetch(
+    const res = await fetchWithAuth(
       `${
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
       }/available-dates`,

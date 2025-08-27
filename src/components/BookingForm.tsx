@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 
 export default function BookingForm() {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [form, setForm] = useState({
     name: "",
@@ -51,7 +52,7 @@ export default function BookingForm() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `${
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
         }/bookings`,
@@ -59,9 +60,6 @@ export default function BookingForm() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            ...(session && "accessToken" in session && session.accessToken
-              ? { Authorization: `Bearer ${session.accessToken}` }
-              : {}),
           },
           body: JSON.stringify(form),
         }
@@ -71,9 +69,12 @@ export default function BookingForm() {
         throw new Error(data.message || "Booking failed.");
       }
       setSubmitted(true);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message || "Something went wrong. Please try again.");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "Something went wrong. Please try again.");
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

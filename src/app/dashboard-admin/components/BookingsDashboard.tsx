@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import OrderDetailsForm from "./OrderDetails";
+import SendTrackingCode from "./SendTrackingCode";
 
 type Booking = {
   id: number;
@@ -21,12 +23,16 @@ type Booking = {
   shoulder?: string;
   sleeve?: string;
   kebayaLength?: string;
+  trackingCode?: string;
+  orderDetails?: {
+    [key: string]: string | number | undefined;
+  };
 };
 
 export default function BookingsDashboard() {
   const [orderDetailsId, setOrderDetailsId] = useState<number | null>(null);
   const handleOrderDetailsClick = (id: number) => {
-    setOrderDetailsId(id);
+    setOrderDetailsId((prev) => (prev === id ? null : id));
   };
   const handleOrderDetailsCancel = () => {
     setOrderDetailsId(null);
@@ -50,8 +56,7 @@ export default function BookingsDashboard() {
 
   const handleEditSave = async (id: number) => {
     setEditLoading(true);
-    const token = session?.accessToken || "";
-    const res = await fetch(
+    const res = await fetchWithAuth(
       `${
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
       }/bookings/${id}`,
@@ -59,7 +64,6 @@ export default function BookingsDashboard() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({ date: editDate, time: editTime }),
       }
@@ -83,18 +87,18 @@ export default function BookingsDashboard() {
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState("");
   const { data: session } = useSession();
+  const [showTrackingCodeId, setShowTrackingCodeId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const token = session?.accessToken || "";
-      const res = await fetch(
+      const res = await fetchWithAuth(
         `${
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
         }/bookings`,
         {
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
+          headers: {},
         }
       );
       const data = await res.json();
@@ -108,8 +112,7 @@ export default function BookingsDashboard() {
   const confirmBooking = async (id: number) => {
     setLoading(true);
     setFeedback("");
-    const token = session?.accessToken || "";
-    const res = await fetch(
+    const res = await fetchWithAuth(
       `${
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
       }/bookings/${id}`,
@@ -117,7 +120,6 @@ export default function BookingsDashboard() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({ status: "confirmed" }),
       }
@@ -150,13 +152,13 @@ export default function BookingsDashboard() {
         >
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-3 text-left" style={{ width: "80px" }}>
+              <th className="px-4 py-3 text-left" style={{ width: "200px" }}>
                 Name
               </th>
-              <th className="px-4 py-3 text-left" style={{ width: "180px" }}>
+              <th className="px-4 py-3 text-left" style={{ width: "280px" }}>
                 Email
               </th>
-              <th className="px-4 py-3 text-left" style={{ width: "120px" }}>
+              <th className="px-4 py-3 text-left" style={{ width: "180px" }}>
                 WhatsApp
               </th>
               <th className="px-4 py-3 text-left" style={{ width: "200px" }}>
@@ -195,7 +197,7 @@ export default function BookingsDashboard() {
               <th className="px-4 py-3 text-left" style={{ width: "90px" }}>
                 Status
               </th>
-              <th className="px-4 py-3 text-left" style={{ width: "120px" }}>
+              <th className="px-4 py-3 text-left" style={{ width: "2it20px" }}>
                 Action
               </th>
             </tr>
@@ -278,7 +280,11 @@ export default function BookingsDashboard() {
                     <td className="px-4 py-3">{b.sleeve || "-"}</td>
                     <td className="px-4 py-3">{b.kebayaLength || "-"}</td>
                     <td className="px-4 py-3 capitalize">
-                      {b.status === "confirmed" ? (
+                      {b.trackingCode ? (
+                        <span className="text-blue-600 font-medium">
+                          Tracking Sent
+                        </span>
+                      ) : b.status === "confirmed" ? (
                         <span className="text-green-600 font-medium">
                           Confirmed
                         </span>
@@ -329,39 +335,64 @@ export default function BookingsDashboard() {
                             Reschedule
                           </button>
                         ))}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan={15}>
-                      {b.status === "confirmed" && (
-                        <div className="py-4">
-                          <div className="mt-4">
-                            {orderDetailsId === b.id ? (
-                              <div className="bg-gray-50 p-4 rounded shadow">
-                                <OrderDetailsForm
-                                  bookingId={b.id}
-                                  onSuccess={handleOrderDetailsCancel}
-                                />
-                                <button
-                                  className="bg-gray-400 text-white px-3 py-1 rounded mt-2"
-                                  onClick={handleOrderDetailsCancel}
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                className="bg-purple-600 text-white px-3 py-1 rounded"
-                                onClick={() => handleOrderDetailsClick(b.id)}
-                              >
-                                Order Details
-                              </button>
-                            )}
-                          </div>
+                      {/* Action buttons: Order Details & Send Tracking Code */}
+                      {(b.status !== "pending" || b.trackingCode) && (
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            className="bg-purple-600 text-white px-3 py-1 rounded"
+                            onClick={() => handleOrderDetailsClick(b.id)}
+                          >
+                            {orderDetailsId === b.id
+                              ? "Close Order Details"
+                              : "Order Details"}
+                          </button>
+                          <button
+                            className="bg-blue-600 text-white px-4 py-2 rounded"
+                            onClick={() =>
+                              setShowTrackingCodeId(
+                                b.id === showTrackingCodeId ? null : b.id
+                              )
+                            }
+                          >
+                            {showTrackingCodeId === b.id
+                              ? "Cancel"
+                              : "Send Tracking Code"}
+                          </button>
                         </div>
                       )}
                     </td>
                   </tr>
+                  {showTrackingCodeId === b.id && (
+                    <tr>
+                      <td colSpan={15}>
+                        <SendTrackingCode
+                          bookingId={b.id}
+                          currentTrackingCode={b.trackingCode}
+                          onSuccess={() => setShowTrackingCodeId(null)}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                  {orderDetailsId === b.id && (
+                    <tr>
+                      <td colSpan={15}>
+                        <div className="bg-gray-50 p-4 rounded shadow mt-2">
+                          <OrderDetailsForm
+                            bookingId={b.id}
+                            initialDetails={b.orderDetails || {}}
+                            onSuccess={handleOrderDetailsCancel}
+                            status={b.status}
+                          />
+                          <button
+                            className="bg-gray-400 text-white px-3 py-1 rounded mt-2"
+                            onClick={handleOrderDetailsCancel}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </React.Fragment>
               ))
             )}

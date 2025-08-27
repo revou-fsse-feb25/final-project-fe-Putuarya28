@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import OngoingBookings from "./components/OngoingBookings";
-import BookingHistory from "./components/BookingHistory";
+import Appointments from "./components/Appointments";
+import OrderStatus from "./components/OrderStatus";
 import EditProfile from "./components/EditProfile";
 
 export default function DashboardUserPage() {
@@ -16,7 +16,7 @@ export default function DashboardUserPage() {
           }`}
           onClick={() => setActiveTab("ongoing")}
         >
-          Ongoing Bookings
+          Appointments
         </button>
         <button
           className={`px-4 py-2 rounded ${
@@ -24,7 +24,7 @@ export default function DashboardUserPage() {
           }`}
           onClick={() => setActiveTab("history")}
         >
-          Booking History
+          Order Status
         </button>
         <button
           className={`px-4 py-2 rounded ${
@@ -35,8 +35,8 @@ export default function DashboardUserPage() {
           Edit Profile
         </button>
       </div>
-      {activeTab === "ongoing" && <OngoingBookings />}
-      {activeTab === "history" && <BookingHistory />}
+      {activeTab === "ongoing" && <Appointments />}
+      {activeTab === "history" && <OrderStatus />}
       {activeTab === "profile" && <EditProfile />}
     </div>
   );

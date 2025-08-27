@@ -93,10 +93,7 @@ export default function EditProfile() {
         setProfilePic(uploadedProfilePic); // set to real URL after upload
         setPreviewPic(""); // clear preview
       }
-      await updateUserProfile(
-        { name, profilePic: uploadedProfilePic },
-        session
-      );
+      await updateUserProfile({ name, profilePic: uploadedProfilePic });
       setSuccess("Profile updated!");
       setProfile((prev) =>
         prev ? { ...prev, name, profilePic: uploadedProfilePic } : prev

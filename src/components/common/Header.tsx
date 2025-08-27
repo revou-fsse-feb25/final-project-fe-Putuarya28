@@ -51,7 +51,11 @@ export default function Header() {
                     </button>
                   )}
                   <button
-                    onClick={() => signOut({ callbackUrl: "/login" })}
+                    onClick={() =>
+                      signOut({ callbackUrl: "/login" }).then(() =>
+                        window.location.reload()
+                      )
+                    }
                     className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
                   >
                     Sign Out

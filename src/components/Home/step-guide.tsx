@@ -21,7 +21,7 @@ const steps = [
     description:
       "Receive your kebaya delivered to your doorstep, ready to wear.",
     imgAlt: "Delivery",
-    imgSrc: "/images/get-ideas.jpg",
+    imgSrc: "/images/delivery.png",
   },
 ];
 
