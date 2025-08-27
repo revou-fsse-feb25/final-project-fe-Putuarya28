@@ -29,7 +29,6 @@ export default function OrderDetailsForm({
   initialDetails = {},
   onSuccess,
 }: Props & { status?: string; currentTrackingCode?: string }) {
-  // const { data: session } = useSession(); // Removed unused variable to fix lint error
   const [measurementType, setMeasurementType] = useState<string>(
     initialDetails.measurementType || "manual"
   );
@@ -131,7 +130,10 @@ export default function OrderDetailsForm({
     setLoading(true);
     setFeedback("");
     // Only send relevant fields for the selected measurement type
-    let orderDetails: any = {
+    let orderDetails: Partial<OrderDetails> & {
+      imageUrl?: string;
+      measurementType: string;
+    } = {
       name: details.name,
       whatsapp: details.whatsapp,
       design: details.design,
@@ -156,11 +158,15 @@ export default function OrderDetailsForm({
       };
     }
     // Remove empty fields
-    Object.keys(orderDetails).forEach(
-      (key) =>
-        (orderDetails[key] === "" || orderDetails[key] === undefined) &&
-        delete orderDetails[key]
-    );
+    Object.keys(orderDetails).forEach((key) => {
+      const typedKey = key as keyof typeof orderDetails;
+      if (
+        orderDetails[typedKey] === "" ||
+        orderDetails[typedKey] === undefined
+      ) {
+        delete orderDetails[typedKey];
+      }
+    });
     const res = await fetchWithAuth(
       `${
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"

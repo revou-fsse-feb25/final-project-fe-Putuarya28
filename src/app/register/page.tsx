@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +11,6 @@ const Register = () => {
   const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -155,7 +155,7 @@ export default function Appointments() {
                 {/* Show general info */}
                 <ul className="list-disc ml-6 mt-2">
                   {(() => {
-                    const od = booking.orderDetails as Record<string, any>;
+                    const od = booking.orderDetails as Record<string, unknown>;
                     return ["name", "whatsapp", "design", "notes"].map((key) =>
                       od[key] ? (
                         <li key={key}>

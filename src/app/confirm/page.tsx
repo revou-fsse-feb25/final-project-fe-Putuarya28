@@ -28,7 +28,7 @@ const ConfirmPage = () => {
           setStatus("error");
           setMessage(data.message || "Confirmation failed.");
         }
-      } catch (error) {
+      } catch {
         setStatus("error");
         setMessage("Something went wrong. Please try again later.");
       }
