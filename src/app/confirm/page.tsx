@@ -9,7 +9,7 @@ const ConfirmPage = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const token = searchParams.get("token");
+    const token = searchParams?.get("token");
     if (!token) {
       setStatus("error");
       setMessage("Invalid confirmation link.");
