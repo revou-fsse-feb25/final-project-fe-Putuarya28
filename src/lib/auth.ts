@@ -1,8 +1,6 @@
 // lib/auth.ts
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
 
 // Type for user object returned from backend /auth/login
 type BackendUser = {
@@ -28,7 +26,6 @@ export const authOptions: AuthOptions = {
       },
     },
   },
-  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: "Credentials",

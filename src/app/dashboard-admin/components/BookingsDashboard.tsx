@@ -197,7 +197,7 @@ export default function BookingsDashboard() {
               <th className="px-4 py-3 text-left" style={{ width: "90px" }}>
                 Status
               </th>
-              <th className="px-4 py-3 text-left" style={{ width: "2it20px" }}>
+              <th className="px-4 py-3 text-left" style={{ width: "320px" }}>
                 Action
               </th>
             </tr>

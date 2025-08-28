@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 
 export default function BookingForm() {
+  const router = useRouter();
   // const { data: session } = useSession();
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [form, setForm] = useState({
@@ -23,6 +25,7 @@ export default function BookingForm() {
     notes: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +72,10 @@ export default function BookingForm() {
         throw new Error(data.message || "Booking failed.");
       }
       setSubmitted(true);
+      setRedirecting(true);
+      setTimeout(() => {
+        router.replace("/dashboard-user");
+      }, 2000);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message || "Something went wrong. Please try again.");
@@ -93,6 +100,12 @@ export default function BookingForm() {
       {submitted ? (
         <div className="text-green-600 text-center font-semibold">
           Thank you! Your appointment has been booked.
+          <br />
+          {redirecting && (
+            <span className="text-gray-700 block mt-2">
+              You will be redirected to your dashboard...
+            </span>
+          )}
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">

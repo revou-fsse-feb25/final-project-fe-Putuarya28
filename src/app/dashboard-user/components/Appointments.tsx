@@ -105,71 +105,83 @@ export default function Appointments() {
             <p className="text-sm text-gray-600 mt-1">
               {statusDescriptions[booking.status]}
             </p>
-            {booking.status === "processing order" && booking.orderDetails && (
-              <div className="mt-2">
-                <div className="font-semibold">Order Details:</div>
-                <ul className="list-disc ml-6">
-                  {(() => {
-                    const od = booking.orderDetails as Record<string, unknown>;
-                    const type = od.measurementType;
-                    const showFields =
-                      type === "manual"
-                        ? [
-                            "bust",
-                            "waist",
-                            "hips",
-                            "shoulder",
-                            "sleeve",
-                            "length",
-                          ]
-                        : type === "size"
-                        ? ["size"]
-                        : [];
-                    return Object.entries(od)
-                      .filter(([key, value]) => {
-                        if (
-                          [
-                            "name",
-                            "whatsapp",
-                            "design",
-                            "notes",
-                            "measurementType",
-                            "imageUrl",
-                          ].includes(key)
-                        )
-                          return false;
-                        if (showFields.length > 0 && !showFields.includes(key))
-                          return false;
-                        return value !== undefined && value !== "";
-                      })
-                      .map(([key, value]) => (
-                        <li key={key}>
-                          <span className="capitalize">
-                            {key.replace(/([A-Z])/g, " $1")}
-                          </span>
-                          : {String(value)}
-                        </li>
-                      ));
-                  })()}
-                </ul>
-                {/* Show general info */}
-                <ul className="list-disc ml-6 mt-2">
-                  {(() => {
-                    const od = booking.orderDetails as Record<string, unknown>;
-                    return ["name", "whatsapp", "design", "notes"].map((key) =>
-                      od[key] ? (
-                        <li key={key}>
-                          <span className="capitalize">
-                            {key.replace(/([A-Z])/g, " $1")}
-                          </span>
-                          : {String(od[key])}
-                        </li>
-                      ) : null
-                    );
-                  })()}
-                </ul>
-              </div>
-            )}
+            {(booking.status === "processing order" ||
+              booking.status === "delivering") &&
+              booking.orderDetails && (
+                <div className="mt-2">
+                  <div className="font-semibold">Order Details:</div>
+                  <ul className="list-disc ml-6">
+                    {(() => {
+                      const od = booking.orderDetails as Record<
+                        string,
+                        unknown
+                      >;
+                      const type = od.measurementType;
+                      const showFields =
+                        type === "manual"
+                          ? [
+                              "bust",
+                              "waist",
+                              "hips",
+                              "shoulder",
+                              "sleeve",
+                              "length",
+                            ]
+                          : type === "size"
+                          ? ["size"]
+                          : [];
+                      return Object.entries(od)
+                        .filter(([key, value]) => {
+                          if (
+                            [
+                              "name",
+                              "whatsapp",
+                              "design",
+                              "notes",
+                              "measurementType",
+                              "imageUrl",
+                            ].includes(key)
+                          )
+                            return false;
+                          if (
+                            showFields.length > 0 &&
+                            !showFields.includes(key)
+                          )
+                            return false;
+                          return value !== undefined && value !== "";
+                        })
+                        .map(([key, value]) => (
+                          <li key={key}>
+                            <span className="capitalize">
+                              {key.replace(/([A-Z])/g, " $1")}
+                            </span>
+                            : {String(value)}
+                          </li>
+                        ));
+                    })()}
+                  </ul>
+                  {/* Show general info */}
+                  <ul className="list-disc ml-6 mt-2">
+                    {(() => {
+                      const od = booking.orderDetails as Record<
+                        string,
+                        unknown
+                      >;
+                      return ["name", "whatsapp", "design", "notes"].map(
+                        (key) =>
+                          od[key] ? (
+                            <li key={key}>
+                              <span className="capitalize">
+                                {key.replace(/([A-Z])/g, " $1")}
+                              </span>
+                              : {String(od[key])}
+                            </li>
+                          ) : null
+                      );
+                    })()}
+                  </ul>
+                </div>
+              )}
             {editId === booking.id ? (
               <div className="space-y-2">
                 <input

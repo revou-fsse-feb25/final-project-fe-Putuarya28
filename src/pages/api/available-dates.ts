@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "@/lib/prisma";
+// Prisma usage removed. This API route should be implemented in the backend only.
 
 export default async function handler(
   req: NextApiRequest,
@@ -7,16 +7,15 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
-      const dates = await prisma.availableDate.findMany();
-      res.status(200).json(dates);
+      // This code should be handled by the backend. Return a 501 Not Implemented for now.
+      res.status(501).json({ error: "Not implemented. Use backend API." });
     } catch {
       res.status(500).json({ error: "Failed to fetch available dates" });
     }
   } else if (req.method === "POST") {
     try {
-      const { date } = req.body;
-      const newDate = await prisma.availableDate.create({ data: { date } });
-      res.status(201).json(newDate);
+      // This code should be handled by the backend. Return a 501 Not Implemented for now.
+      res.status(501).json({ error: "Not implemented. Use backend API." });
     } catch {
       res.status(500).json({ error: "Failed to add date" });
     }
