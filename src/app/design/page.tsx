@@ -9,7 +9,7 @@ const designCategories = [
   { key: "modern-elegant", label: "Modern Elegant" },
 ];
 
-const BACKEND_URL = "http://localhost:3000/api";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 const DesignPage = () => {
   const [activeCategory, setActiveCategory] = useState(designCategories[0].key);

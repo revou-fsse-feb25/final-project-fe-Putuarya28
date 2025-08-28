@@ -7,7 +7,7 @@ type DesignImage = {
   imageUrl: string;
 };
 
-const BACKEND_URL = "http://localhost:3000/api"; // Change to your backend port
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function AdminDesignIdeas() {
   const [images, setImages] = useState<DesignImage[]>([]);

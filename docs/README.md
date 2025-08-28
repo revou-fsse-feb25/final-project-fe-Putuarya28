@@ -12,13 +12,14 @@ This is the frontend for the Final Project, built with Next.js and TypeScript.
 
 ## Deployment
 
-- [Frontend Live Demo](https://dummy-frontend-deployment-url.com)
+- [Frontend Live Demo](final-project-fe-putuarya28-production-d4d2.up.railway.app)
 
 ## Screenshots
+![Alt text](/frontend/public/images/screenshot-deployment-2.png)
 
 | Home Page                                                                       | Dashboard                                                                            |
 | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| ![Home Screenshot](https://dummyimage.com/400x200/cccccc/000000&text=Home+Page) | ![Dashboard Screenshot](https://dummyimage.com/400x200/cccccc/000000&text=Dashboard) |
+| ![Home Screenshot]![Alt text](/frontend/public/images/screenshot-deployment.png) | ![Dashboard Screenshot]![Alt text](/frontend/public/images/screenshot-userDashboard.png) |
 
 ---
 
@@ -60,10 +61,6 @@ Add any other variables as needed.
 - `src/lib/` — API and utility functions
 - `public/` — Static assets and images
 - `docs/` — Documentation
-
-## Deployment
-
-
 
 ## Contributing
 
