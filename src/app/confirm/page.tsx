@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const ConfirmPage = () => {
+function ConfirmPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("pending");
@@ -60,6 +60,12 @@ const ConfirmPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ConfirmPage;
+export default function ConfirmPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConfirmPageInner />
+    </Suspense>
+  );
+}
