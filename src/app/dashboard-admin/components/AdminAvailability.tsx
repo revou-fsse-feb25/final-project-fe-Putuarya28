@@ -12,11 +12,7 @@ export default function AdminAvailability() {
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
-    fetchWithAuth(
-      `${
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-      }/available-dates`
-    )
+    fetchWithAuth("/api/available-dates")
       .then((res) => res.json())
       .then((data: AvailableDate[]) =>
         setDates(data.map((d) => d.date.slice(0, 10)))
@@ -28,16 +24,11 @@ export default function AdminAvailability() {
     setLoading(true);
     setFeedback("");
     const isoDate = new Date(newDate).toISOString();
-    const res = await fetchWithAuth(
-      `${
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-      }/available-dates`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date: isoDate }),
-      }
-    );
+    const res = await fetchWithAuth("/api/available-dates", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date: isoDate }),
+    });
     setLoading(false);
     if (res.ok) {
       setDates([...dates, newDate]);
