@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["localhost"],
+    domains: ["final-project-be-putuarya28.onrender.com"],
   },
-  /* config options here */
+  
 };
 
 export default nextConfig;
