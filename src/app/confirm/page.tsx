@@ -10,13 +10,30 @@ function ConfirmPageInner() {
 
   useEffect(() => {
     const token = searchParams?.get("token");
-    if (token) {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-      window.location.href = `${apiUrl}/auth/confirm?token=${token}`;
-    } else {
+    if (!token) {
       setStatus("error");
       setMessage("Invalid confirmation link.");
+      return;
     }
+    const confirmAccount = async () => {
+      try {
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+        const res = await fetch(`${apiUrl}/auth/confirm?token=${token}`);
+        const data = await res.json();
+        if (res.ok) {
+          setStatus("success");
+          setMessage("Your account has been confirmed! You can now log in.");
+        } else {
+          setStatus("error");
+          setMessage(data.message || "Confirmation failed.");
+        }
+      } catch {
+        setStatus("error");
+        setMessage("Something went wrong. Please try again later.");
+      }
+    };
+    confirmAccount();
   }, [searchParams]);
 
   return (
