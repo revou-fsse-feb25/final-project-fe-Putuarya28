@@ -12,13 +12,12 @@ This is the frontend for the Final Project, built with Next.js and TypeScript.
 
 ## Deployment
 
-- [Frontend Live Demo](final-project-fe-putuarya28-production-d4d2.up.railway.app)
+- [Frontend Live Demo](final-project-fe-putuarya28-production-18f9.up.railway.app)
 
 ## Screenshots
 
-
-| Home Page                                                                       | Dashboard                                                                            |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Home Page                                                                        | Dashboard                                                                                |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | ![Home Screenshot]![Alt text](/frontend/public/images/screenshot-deployment.png) | ![Dashboard Screenshot]![Alt text](/frontend/public/images/screenshot-userDashboard.png) |
 
 ---
